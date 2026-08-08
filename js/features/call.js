@@ -665,6 +665,27 @@ html:not([data-theme="dark"])[data-color-theme="black-white"] .message-sent{
         if (!ov) return;
         fillAv('call-inc-avatar'); fillNm('call-inc-name');
         ov.classList.add('visible');
+        try {
+            if (
+                document.hidden &&
+                'Notification' in window &&
+                Notification.permission === 'granted' &&
+                localStorage.getItem('notifEnabled') === '1'
+            ) {
+                const name =
+                    (typeof settings !== 'undefined' && settings.partnerName)
+                        ? settings.partnerName
+                        : '对方';
+
+                new Notification('📞 ' + name + '來電', {
+                    body: name + '正在呼叫你……',
+                    icon: (document.querySelector('#partner-avatar img') || {}).src,
+                    tag: 'partner-call',
+                    renotify: true
+                });
+            }
+        } catch (e) {}
+
         clearTimeout(S.incomingTimer);
 
         const autoRejectChance = 0.30;
