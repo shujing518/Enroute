@@ -1372,6 +1372,22 @@ const addMessage = (message) => {
                 : `${settings.partnerName} ${pokeAction}`;
 
             addMessage({ id: Date.now(), text: pokeText, timestamp: new Date(), type: 'system' });
+            try {
+                if (
+                   document.hidden &&
+                   'Notification' in window &&
+                   Notification.permission === 'granted' &&
+                   localStorage.getItem('notifEnabled') === '1'
+                ) {
+                   new Notification(settings.partnerName || '对方', {
+                       body: pokeText,
+                       icon: (document.querySelector('#partner-avatar img') || {}).src,
+                       tag: 'partner-poke',
+                       renotify: true
+                   });
+                }
+            } catch (e) {}
+
             if (typeof playSound === 'function') playSound('partner_poke');
             (function(){try{if(window._typingIndicatorAutoHideTimer){clearTimeout(window._typingIndicatorAutoHideTimer);window._typingIndicatorAutoHideTimer=null;}}catch(e){}var _tiW=document.getElementById('typing-indicator-wrapper');if(_tiW){var _tiInner=_tiW.querySelector('.typing-indicator');if(_tiInner){_tiInner.classList.add('hiding');setTimeout(function(){_tiW.style.display='none';if(_tiInner)_tiInner.classList.remove('hiding');},240);}else{_tiW.style.display='none';}}})();
         };
